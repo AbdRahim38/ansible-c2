@@ -1,0 +1,21 @@
+# add.yml Ansible Challange dos/2
+---
+  - hosts: envlocal
+    become: yes
+    vars_prompt:
+      - name: USERNAME_LIST
+        prompt: "Enter Usernames (without spacing & seperated by commas) "
+        private: "No"      
+    tasks:
+    - name: Printing Usernames
+      debug:
+        msg: "{{ USERNAME_LIST }}"
+    - set_fact:
+        USERNAME_LIST_SPLIT: "{{ USERNAME_LIST.split(',') }}"        
+    - name: Adding User/s
+      user:
+        name: '{{ item }}'
+        create_home: true
+        shell: /bin/bash
+        update_password: on_create
+      with_items: "{{ USERNAME_LIST_SPLIT }}"

@@ -1,0 +1,20 @@
+# delete.yml Ansible Challange dos/2
+---
+  - hosts: envlocal
+    become: yes
+    vars_prompt:
+      - name: DELETEUSER_LIST
+        prompt: "Please enter Users to delete without spacing (seperated each by commas) "
+        private: "No"      
+    tasks:
+    - name: Printing Usernames To Delete
+      debug:
+        msg: "{{ DELETEUSER_LIST }}"
+    - set_fact:
+        DELETEUSER_LIST_SPLIT: "{{ DELETEUSER_LIST.split(',') }}"        
+    - name: Deleting User/s
+      user:
+        name: "{{ item }}"
+        state: absent
+        remove: yes
+      with_items: "{{ DELETEUSER_LIST_SPLIT }}"
